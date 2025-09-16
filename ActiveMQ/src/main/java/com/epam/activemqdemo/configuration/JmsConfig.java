@@ -48,6 +48,16 @@ public class JmsConfig {
         return template;
     }
 
+//    Что конкретно означает template.setPubSubDomain(true);?
+//    По умолчанию (false): Если pubSubDomain установлено в false (что является значением по умолчанию),
+//    то JmsTemplate будет работать в режиме "point-to-point", а это означает, что сообщения будут отправляться
+//    в очереди. В этом режиме каждое сообщение доставляется одному получателю.
+
+//    Когда pubSubDomain = true: Если значение установлено в true, то JmsTemplate будет использовать топики,
+//    соответствующие модели publish/subscribe (публикация/подписка).
+//    В этом режиме каждое сообщение может быть доставлено нескольким получателям,
+//    которые подписаны на данный топик.
+
     @Bean(name = "queueListenerFactory")
     public DefaultJmsListenerContainerFactory jmsListenerQueueContainerFactory(
             ActiveMQConnectionFactory connectionFactory) {
@@ -64,4 +74,19 @@ public class JmsConfig {
         factory.setPubSubDomain(true);
         return factory;
     }
+
+//    Строка factory.setPubSubDomain(true); в конфигурации DefaultJmsListenerContainerFactory конкретно настраивает,
+//    что слушатели (@JmsListener), которые будут использовать данную фабрику, должны работать в режиме
+//    Publish/Subscribe. Это то же самое, что переключить фабрику в режим работы с топиками (topics),
+//    а не с очередями (queues).
+
+//    Ключевая идея:
+//    В JMS (Java Message Service) есть два типа взаимодействия:
+
+//    1) Очереди (point-to-point):
+//    Сообщение отправляется в очередь (queue), где оно может быть получено одним (и только одним) потребителем.
+//    Это типичная модель взаимодействия "отправитель-один-получатель".
+//    2) Топики (publish/subscribe):
+//    Сообщение публикуется в топик (topic), а уже несколько подписчиков одновременно (если они есть) могут его получить.
+//    Это подход для широковещательной рассылки: одно сообщение распространяется на всех активных подписчиков.
 }
